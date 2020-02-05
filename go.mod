@@ -25,6 +25,7 @@ require (
 	k8s.io/helm v2.16.1+incompatible
 	k8s.io/klog v1.0.0
 	k8s.io/kubectl v0.0.0-20191016120415-2ed914427d51 // kubernetes-1.16.2
+	k8s.io/utils v0.0.0-20191010214722-8d271d903fe4
 )
 
 // github.com/fluxcd/helm-operator/pkg/install lives in this very reprository, so use that
