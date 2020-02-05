@@ -134,7 +134,13 @@ cache/bats-core-$(BATS_COMMIT).tar.gz:
 	# Use 2opremio's fork until https://github.com/bats-core/bats-core/pull/255 is merged
 	curl --fail -L -o $@ https://github.com/2opremio/bats-core/archive/$(BATS_COMMIT).tar.gz
 
-generate-deploy: pkg/install/generated_templates.gogen.go
+generate-codegen:
+	./hack/update/generate-codegen.sh
+
+generate-crds:
+	./hack/update/generate-crds.sh
+
+generate-deploy: generate-crds pkg/install/generated_templates.gogen.go
 	cd deploy && go run ../pkg/install/generate.go deploy
 
 check-generated: generate-deploy pkg/install/generated_templates.gogen.go
