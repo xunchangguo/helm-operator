@@ -234,7 +234,7 @@ func (c *Controller) syncHandler(key string) error {
 	}
 	c.release.Sync(helmClient, hr.DeepCopy())
 	c.recorder.Event(hr, corev1.EventTypeNormal, ChartSynced, MessageChartSynced)
-
+	//TODO add/update func helm crd
 	return nil
 }
 
@@ -318,6 +318,7 @@ func (c *Controller) deleteRelease(hr helmfluxv1.HelmRelease) {
 		return
 	}
 	c.release.Uninstall(helmClient, hr.DeepCopy())
+	//TODO add call del
 }
 
 func (c *Controller) getHelmClientForRelease(hr helmfluxv1.HelmRelease) (helm.Client, error) {

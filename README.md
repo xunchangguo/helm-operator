@@ -1,6 +1,6 @@
 # Helm Operator
 
-[![CircleCI](https://circleci.com/gh/fluxcd/helm-operator.svg?style=svg)](https://circleci.com/gh/fluxcd/helm-operator)
+[![CircleCI](https://circleci.com/gh/xunchangguo/helm-operator.svg?style=svg)](https://circleci.com/gh/xunchangguo/helm-operator)
 [![GoDoc](https://godoc.org/github.com/fluxcd/helm-operator?status.svg)](https://godoc.org/github.com/fluxcd/helm-operator)
 [![Documentation](https://img.shields.io/badge/latest-documentation-informational)](https://docs.fluxcd.io/projects/helm-operator/en/latest/)
 
