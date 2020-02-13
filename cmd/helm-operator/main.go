@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/fluxcd/helm-operator/pkg/notify"
 	"os"
 	"os/signal"
 	"strings"
@@ -71,6 +72,8 @@ var (
 
 	enabledHelmVersions *[]string
 	defaultHelmVersion  *string
+
+	notifyUrl *string
 )
 
 const (
@@ -125,6 +128,8 @@ func init() {
 	versionedHelmRepositoryIndexes = fs.StringSlice("helm-repository-import", nil, "Targeted version and the path of the Helm repository index to import, i.e. v3:/tmp/v3/index.yaml,v2:/tmp/v2/index.yaml")
 
 	enabledHelmVersions = fs.StringSlice("enabled-helm-versions", []string{v2.VERSION, v3.VERSION}, "Helm versions supported by this operator instance")
+
+	notifyUrl = fs.String("notify-url", "", "helm release notify url")
 }
 
 func main() {
@@ -252,6 +257,11 @@ func main() {
 	// setup workqueue for HelmReleases
 	queue := workqueue.NewNamedRateLimitingQueue(workqueue.DefaultControllerRateLimiter(), "ChartRelease")
 
+	var notifyQueue workqueue.RateLimitingInterface
+	if len(*notifyUrl) > 0 {
+		notifyQueue = workqueue.NewNamedRateLimitingQueue(workqueue.DefaultControllerRateLimiter(), "ChartReleaseNotify")
+	}
+
 	gitChartSync := chartsync.NewGitChartSync(
 		log.With(logger, "component", "gitchartsync"),
 		kubeClient.CoreV1(),
@@ -268,12 +278,18 @@ func main() {
 		release.Config{LogDiffs: *logReleaseDiffs, UpdateDeps: *updateDependencies},
 	)
 
+	var notifier *notify.HttpNotify = nil
+	if len(*notifyUrl) > 0 {
+		notifier = notify.New(log.With(logger, "component", "notifier"), *notifyUrl, notifyQueue)
+	}
+
 	// prepare operator and start FluxRelease informer
 	// NB: the operator needs to do its magic with the informer
 	// _before_ starting it or else the cache sync seems to hang at
 	// random
 	opr := operator.New(log.With(logger, "component", "operator"),
-		*logReleaseDiffs, kubeClient, hrInformer, queue, rel, helmClients, *defaultHelmVersion)
+		*logReleaseDiffs, kubeClient, hrInformer, queue, rel, helmClients, *defaultHelmVersion, notifier)
+
 	go ifInformerFactory.Start(shutdown)
 
 	// wait for the caches to be synced before starting _any_ workers
@@ -286,6 +302,10 @@ func main() {
 
 	// start operator
 	go opr.Run(*workers, shutdown, shutdownWg)
+
+	if notifier != nil {
+		go notifier.Run(shutdown)
+	}
 
 	// start git chart sync loop
 	go gitChartSync.Run(shutdown, errc, shutdownWg)

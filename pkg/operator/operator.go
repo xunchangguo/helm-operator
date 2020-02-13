@@ -2,6 +2,7 @@ package operator
 
 import (
 	"fmt"
+	"github.com/fluxcd/helm-operator/pkg/notify"
 	"sync"
 	"time"
 
@@ -38,6 +39,9 @@ const (
 	// MessageChartSynced - the message used for an Event fired when a HelmRelease
 	// is synced.
 	MessageChartSynced = "Chart managed by HelmRelease processed"
+
+	ActionDelete      = "DEL"
+	ActionAddOrUpdate = "ADD_UPDATE"
 )
 
 // Controller is the operator implementation for HelmRelease resources
@@ -63,6 +67,8 @@ type Controller struct {
 	// recorder is an event recorder for recording Event resources to the
 	// Kubernetes API.
 	recorder record.EventRecorder
+
+	notifier *notify.HttpNotify
 }
 
 // New returns a new helm-operator
@@ -74,7 +80,8 @@ func New(
 	releaseWorkqueue workqueue.RateLimitingInterface,
 	release *release.Release,
 	helmClients *helm.Clients,
-	defaultHelmVersion string) *Controller {
+	defaultHelmVersion string,
+	notifier *notify.HttpNotify) *Controller {
 
 	// Add helm-operator types to the default Kubernetes Scheme so Events can be
 	// logged for helm-operator types.
@@ -93,6 +100,7 @@ func New(
 		release:            release,
 		helmClients:        helmClients,
 		defaultHelmVersion: defaultHelmVersion,
+		notifier:           notifier,
 	}
 
 	controller.logger.Log("info", "setting up event handlers")
@@ -234,7 +242,11 @@ func (c *Controller) syncHandler(key string) error {
 	}
 	c.release.Sync(helmClient, hr.DeepCopy())
 	c.recorder.Event(hr, corev1.EventTypeNormal, ChartSynced, MessageChartSynced)
-	//TODO add/update func helm crd
+	//add/update func helm crd
+	if c.notifier != nil {
+		c.notifier.AddNotify(name, namespace, hr.GetReleaseName(), hr.GetTargetNamespace(), ActionAddOrUpdate)
+	}
+
 	return nil
 }
 
@@ -318,7 +330,10 @@ func (c *Controller) deleteRelease(hr helmfluxv1.HelmRelease) {
 		return
 	}
 	c.release.Uninstall(helmClient, hr.DeepCopy())
-	//TODO add call del
+	//add call del
+	if c.notifier != nil {
+		c.notifier.AddNotify(hr.GetName(), hr.GetNamespace(), hr.GetReleaseName(), hr.GetTargetNamespace(), ActionDelete)
+	}
 }
 
 func (c *Controller) getHelmClientForRelease(hr helmfluxv1.HelmRelease) (helm.Client, error) {
