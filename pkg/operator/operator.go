@@ -240,11 +240,14 @@ func (c *Controller) syncHandler(key string) error {
 		c.logger.Log("warning", err.Error(), "resource", hr.ResourceID().String())
 		return nil
 	}
-	c.release.Sync(helmClient, hr.DeepCopy())
+	var sync bool = false
+	_, err, sync = c.release.Sync(helmClient, hr.DeepCopy())
 	c.recorder.Event(hr, corev1.EventTypeNormal, ChartSynced, MessageChartSynced)
 	//add/update func helm crd
 	if c.notifier != nil {
-		c.notifier.AddNotify(name, namespace, hr.GetReleaseName(), hr.GetTargetNamespace(), ActionAddOrUpdate)
+		if err != nil && sync {
+			c.notifier.AddNotify(name, namespace, hr.GetReleaseName(), hr.GetTargetNamespace(), ActionAddOrUpdate)
+		}
 	}
 
 	return nil
