@@ -12,11 +12,11 @@ import (
 )
 
 type NotifyInfo struct {
-	CrdName      string
-	CrdNamespace string
-	Name         string
-	Namespace    string
-	Action       string
+	CrdName      string `json:"crdName,string"`
+	CrdNamespace string `json:"crdNamespace,string"`
+	Name         string `json:"name,string"`
+	Namespace    string `json:"namespace,string"`
+	Action       string `json:"action,string"`
 }
 
 type HttpNotify struct {

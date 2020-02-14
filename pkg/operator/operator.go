@@ -245,7 +245,7 @@ func (c *Controller) syncHandler(key string) error {
 	c.recorder.Event(hr, corev1.EventTypeNormal, ChartSynced, MessageChartSynced)
 	//add/update func helm crd
 	if c.notifier != nil {
-		if err != nil && sync {
+		if err == nil && sync {
 			c.notifier.AddNotify(name, namespace, hr.GetReleaseName(), hr.GetTargetNamespace(), ActionAddOrUpdate)
 		}
 	}
