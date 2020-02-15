@@ -1,6 +1,6 @@
 # Helm Operator
 
-[![CircleCI](https://circleci.com/gh/xunchangguo/helm-operator.svg?style=svg)](https://circleci.com/gh/xunchangguo/helm-operator)
+[![CircleCI](https://circleci.com/gh/fluxcd/helm-operator.svg?style=svg)](https://circleci.com/gh/fluxcd/helm-operator)
 [![GoDoc](https://godoc.org/github.com/fluxcd/helm-operator?status.svg)](https://godoc.org/github.com/fluxcd/helm-operator)
 [![Documentation](https://img.shields.io/badge/latest-documentation-informational)](https://docs.fluxcd.io/projects/helm-operator/en/latest/)
 
@@ -26,8 +26,8 @@ performed by the operator.
   * Any other public or private chart source using one of the available
     [Helm downloader plugins](https://helm.sh/docs/topics/plugins/#downloader-plugins)
 * Allows Helm values to be specified;
-  * in-line in the `HelmRelease` resource
-  * from (external) sources, e.g. `ConfigMap` and `Secret` resources,
+  * In-line in the `HelmRelease` resource
+  * In (external) sources, e.g. `ConfigMap` and `Secret` resources,
     or a (local) URL
 * Automated purging on release install failures
 * Automated (optional) rollback on upgrade failures

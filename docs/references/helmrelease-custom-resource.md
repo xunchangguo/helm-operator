@@ -116,7 +116,7 @@ OK
 By default, the Helm operator is able to pull charts from repositories
 using HTTP/S. It is however possible to extend the supported protocols
 by making use of a [Helm downloader plugin](https://helm.sh/docs/topics/plugins/#downloader-plugins),
-this allows you for example to use charts hosted on [Amazon S3](https://github.com/hayorov/helm-gcs)
+this allows you for example to use charts hosted on [Amazon S3](https://github.com/hypnoglow/helm-s3)
 or [Google Cloud Storage](https://github.com/hayorov/helm-gcs).
 
 > **Note:** the operator only offers support for _downloader plugins_,
@@ -162,9 +162,14 @@ spec:
   - name: helm-3-downloader-plugin
     image: docker.io/fluxcd/helm-operator:<tag>
     imagePullPolicy: IfNotPresent
-    command: ['sh', '-c', 'helm3 plugin install <plugin> --version <version>']
+    command:
+      - 'sh'
+      - '-c'
+      # Replace '<plugin>' and '<version>' with the respective
+      # values of the plugin you want to install
+      - 'helm3 plugin install <plugin> --version <version>'
     volumeMounts:
-    - name: helm-plugin-cache
+    - name: helm-plugins-cache
       # See: 'plugin folder paths per Helm version'
       mountPath: /root/.cache/helm/plugins
       subPath: v3
@@ -184,7 +189,7 @@ spec:
     image: docker.io/fluxcd/helm-operator:<tag>
     ...
     volumeMounts:
-    - name: helm-plugin-cache
+    - name: helm-plugins-cache
       # See: 'plugin folder paths per Helm version'
       mountPath: /root/.cache/helm/plugins
       subPath: v3
