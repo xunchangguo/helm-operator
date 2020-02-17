@@ -12,11 +12,11 @@ import (
 )
 
 type NotifyInfo struct {
-	CrdName      string `json:"crdName,string"`
-	CrdNamespace string `json:"crdNamespace,string"`
-	Name         string `json:"name,string"`
-	Namespace    string `json:"namespace,string"`
-	Action       string `json:"action,string"`
+	CrdName      string `json:"crdName"`
+	CrdNamespace string `json:"crdNamespace"`
+	Name         string `json:"name"`
+	Namespace    string `json:"namespace"`
+	Action       string `json:"action"`
 }
 
 type HttpNotify struct {
@@ -82,6 +82,7 @@ func (n *HttpNotify) processNextWorkItem() bool {
 		if err := n.notifyHandler(key); err != nil {
 			return err
 		}
+		n.logger.Log("info", fmt.Sprintf("notify success : %v", obj))
 		// If no error occurs we Forget this item so it does not
 		// get queued again until another change happens.
 		n.notifyQueue.Forget(obj)
