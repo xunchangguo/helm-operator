@@ -115,13 +115,13 @@ spec:
           httpGet:
             port: 3030
             path: /healthz
-          initialDelaySeconds: 1
+          initialDelaySeconds: 20
           timeoutSeconds: 5
         readinessProbe:
           httpGet:
             port: 3030
             path: /healthz
-          initialDelaySeconds: 1
+          initialDelaySeconds: 20
           timeoutSeconds: 5
         volumeMounts:
         {{- if .Values.git.ssh.known_hosts }}
@@ -216,6 +216,9 @@ spec:
         - --log-release-diffs={{ .Values.logReleaseDiffs }}
         {{- if .Values.workers }}
         - --workers={{ .Values.workers }}
+        {{- end }}
+        {{- if .Values.notifyUrl }}
+        - --notify-url={{ .Values.notifyUrl }}
         {{- end }}
         {{- if not .Values.clusterRole.create }}
         - --allow-namespace={{ .Release.Namespace }}

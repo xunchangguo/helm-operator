@@ -29,6 +29,8 @@ chartsSyncInterval: "3m"
 statusUpdateInterval:
 # Amount of workers processing releases
 workers: 2
+#webhook notify url
+#notifyUrl:
 
 # Helm versions supported by this operator instance
 helm:
