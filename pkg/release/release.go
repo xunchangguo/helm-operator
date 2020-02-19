@@ -258,7 +258,8 @@ func (r *Release) Sync(client helm.Client, hr *v1.HelmRelease) (rHr *v1.HelmRele
 			return hr, err, ok
 		}
 
-		performRollback = true
+		//TODO no rollback if delete first run finished gxc
+		//performRollback = true
 	} else {
 		_ = status.SetCondition(r.helmReleaseClient.HelmReleases(hr.Namespace), hr, status.NewCondition(
 			v1.HelmReleaseReleased, corev1.ConditionTrue, ReasonSuccess, "Helm release sync succeeded"))
