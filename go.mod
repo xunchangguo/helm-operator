@@ -18,7 +18,6 @@ require (
 	github.com/gorilla/mux v1.7.3
 	github.com/kardianos/osext v0.0.0-20190222173326-2bc1f35cddc0 // indirect
 	github.com/ncabatoff/go-seq v0.0.0-20180805175032-b08ef85ed833
-	github.com/parnurzeal/gorequest v0.2.16
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.2.1
 	github.com/spf13/pflag v1.0.5
@@ -35,7 +34,7 @@ require (
 	k8s.io/helm v2.16.1+incompatible
 	k8s.io/klog v1.0.0
 	k8s.io/kubectl v0.17.2
-	moul.io/http2curl v1.0.0 // indirect
+	k8s.io/utils v0.0.0-20191114184206-e782cd3c129f
 )
 
 // github.com/fluxcd/helm-operator/pkg/install lives in this very reprository, so use that
