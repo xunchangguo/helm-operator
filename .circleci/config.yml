@@ -66,10 +66,6 @@ jobs:
       - run: make check-generated
       - run: make test TEST_FLAGS="-race -timeout 5m"
       - run: make all
-      - e2e_tests:
-          helm_version: v2
-      - e2e_tests:
-          helm_version: v3
       - save_cache:
           key: cache-{{ checksum "Makefile" }}
           paths:
