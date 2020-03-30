@@ -20,8 +20,6 @@ import (
 	"k8s.io/client-go/util/workqueue"
 	"k8s.io/klog"
 
-	"github.com/fluxcd/flux/pkg/checkpoint"
-
 	"github.com/fluxcd/helm-operator/pkg/annotator"
 	"github.com/fluxcd/helm-operator/pkg/chartsync"
 	clientset "github.com/fluxcd/helm-operator/pkg/client/clientset/versioned"
@@ -334,7 +332,7 @@ func main() {
 	// start HTTP server
 	go daemonhttp.ListenAndServe(*listenAddr, gitChartSync, log.With(logger, "component", "daemonhttp"), shutdown)
 
-	checkpoint.CheckForUpdates(product, version, nil, log.With(logger, "component", "checkpoint"))
+	//checkpoint.CheckForUpdates(product, version, nil, log.With(logger, "component", "checkpoint"))
 
 	shutdownErr := <-errc
 	logger.Log("exiting...", shutdownErr)
